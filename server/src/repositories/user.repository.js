@@ -30,7 +30,7 @@ async function addRefreshToken(userId, hashedToken) {
       },
     },
     {
-      new: true,
+      returnDocument: "after",
     },
   );
 }
