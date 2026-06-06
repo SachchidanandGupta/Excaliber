@@ -30,8 +30,6 @@ async function updateWorkspace({ id, name, description, icon, settings }) {
   return workspace;
 }
 
-
-
 async function deleteWorkspace(id) {
   const workspace = await workspaceModel.findByIdAndDelete(id);
   return workspace;
