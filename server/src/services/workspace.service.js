@@ -6,6 +6,7 @@ const {
 } = require("../repositories/workspace.repository");
 const {
   findFoldersByWorkspaceId,
+  createFolder,
 } = require("../repositories/folder.repository");
 const {
   createCollaborator,
@@ -22,8 +23,15 @@ const createWorkspaceService = async ({ name, description, icon, ownerId }) => {
     role: "owner",
     invitedBy: ownerId,
   });
+  const folder =  await createFolder({
+    workspaceId: workspace._id,
+    name: "General",
+    parentId: null,
+    createdBy: ownerId,
+    order: 0,
+  });
 
-  return workspace;
+  return { workspace, folder };
 };
 
 const getUserWorkspaceService = async (userId) => {

@@ -10,10 +10,11 @@ const {
 const createWorkspaceController = asyncHandler(async function (req, res) {
   const { name, description, icon } = req.body;
   const ownerId = req.user.id;
-  const workspace = await createWorkspaceService({ name, description, icon, ownerId });
+  const {workspace,folder} = await createWorkspaceService({ name, description, icon, ownerId });
   return res.status(201).json({
     success: true,
     workspace,
+    folder
   });
 });
 
