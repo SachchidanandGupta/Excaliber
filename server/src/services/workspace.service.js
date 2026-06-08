@@ -7,12 +7,18 @@ const {
 const {
   findFoldersByWorkspaceId,
   createFolder,
+  deleteFoldersByWorkspaceId,
 } = require("../repositories/folder.repository");
 const {
   createCollaborator,
   findAllCollaboratorsByUserId,
   findCollaboratorByWorkspaceAndUser,
+  deleteCollaboratorByWorkspaceId,
 } = require("../repositories/collaborator.repository");
+
+const {
+  deleteDocumentByWorkspaceId,
+} = require("../repositories/document.repository");
 const AppError = require("../utils/appError");
 
 const createWorkspaceService = async ({ name, description, icon, ownerId }) => {
@@ -23,7 +29,7 @@ const createWorkspaceService = async ({ name, description, icon, ownerId }) => {
     role: "owner",
     invitedBy: ownerId,
   });
-  const folder =  await createFolder({
+  const folder = await createFolder({
     workspaceId: workspace._id,
     name: "General",
     parentId: null,
@@ -88,12 +94,15 @@ const updateWorkspaceService = async ({
   }
 
   const updateData = {};
-  if (workspaceId !== undefined) updateData.id = workspaceId;
   if (name !== undefined) updateData.name = name;
   if (description !== undefined) updateData.description = description;
   if (icon !== undefined) updateData.icon = icon;
   if (settings !== undefined) updateData.settings = settings;
-  const updatedWorkspace = await updateWorkspace(updateData);
+
+  const updatedWorkspace = await updateWorkspace({
+    id: workspaceId,
+    ...updateData,
+  });
   return updatedWorkspace;
 };
 
@@ -108,6 +117,9 @@ const deleteWorkspaceService = async ({ workspaceId, userId }) => {
   if (collaborator.role !== "owner") {
     throw new AppError("Only owners can delete workspace", 403);
   }
+  await deleteDocumentByWorkspaceId(workspaceId);
+  await deleteFoldersByWorkspaceId(workspaceId);
+  await deleteCollaboratorByWorkspaceId(workspaceId);
 
   const deletedWorkspace = await deleteWorkspace(workspaceId);
   return deletedWorkspace;

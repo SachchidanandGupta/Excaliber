@@ -1,9 +1,11 @@
 const workspaceModel = require("../models/workspace.model");
+const AppError = require("../utils/appError");
 
-async function createWorkspace({ name, description, ownerId }) {
+async function createWorkspace({ name, description, icon, ownerId }) {
   const workspace = await workspaceModel.create({
     name,
     description,
+    icon,
     ownerId,
   });
   return workspace;

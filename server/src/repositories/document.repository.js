@@ -74,22 +74,33 @@ async function archiveDocument(id) {
   return updatedDocument;
 }
 
-async function deleteDocument(id) {
+
+async function searchDocuments({ workspaceId, query }) {
+  const documents = await documentModel
+  .find(
+    { workspaceId, isArchived: false, $text: { $search: query } },
+    { score: { $meta: "textScore" } },
+  )
+  .sort({ score: { $meta: "textScore" } });
+  
+  return documents;
+}
+
+async function deleteDocumentById(id) {
   const deletedDocument = await documentModel.findByIdAndDelete(id);
   return deletedDocument;
 }
 
-async function searchDocuments({ workspaceId, query }) {
-  const documents = await documentModel
-    .find(
-      { workspaceId, isArchived: false, $text: { $search: query } },
-      { score: { $meta: "textScore" } },
-    )
-    .sort({ score: { $meta: "textScore" } });
-
-  return documents;
+async function deleteDocumentsByFolderId(folderId){
+  const deletedDocuments  = await documentModel.deleteMany({folderId});
+  return deletedDocuments;
 }
 
+async function deleteDocumentByWorkspaceId(workspaceId) {
+  const deletedDocuments = await documentModel.deleteMany({workspaceId});
+  return deletedDocuments;
+  
+}
 module.exports = {
   createDocument,
   findDocumentById,
@@ -97,6 +108,8 @@ module.exports = {
   findDocumentsByFolderId,
   updateDocument,
   archiveDocument,
-  deleteDocument,
   searchDocuments,
+  deleteDocumentById,
+  deleteDocumentByWorkspaceId,
+  deleteDocumentsByFolderId
 };

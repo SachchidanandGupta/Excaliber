@@ -50,6 +50,11 @@ async function removeCollaborator(id) {
   return collaborator;
 }
 
+async function deleteCollaboratorByWorkspaceId(workspaceId){
+  const collaborators = await collaboratorModel.deleteMany({workspaceId});
+  return collaborators;
+}
+
 module.exports = {
   createCollaborator,
   findCollaboratorAllByWorkspaceId,
@@ -57,4 +62,5 @@ module.exports = {
   findAllCollaboratorsByUserId,
   updateCollaboratorRole,
   removeCollaborator,
+  deleteCollaboratorByWorkspaceId
 };

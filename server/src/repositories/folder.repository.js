@@ -36,14 +36,21 @@ async function updateFolder({ id, name, parentId ,order}) {
   return folder;
 }
 
+
+
+async function findRootFolders(workspaceId) {
+  const folder = await folderModel.find({workspaceId , parentId: null });
+  return folder;
+}
+
 async function deleteFolderById(id) {
   const folder = await folderModel.findByIdAndDelete(id);
   return folder;
 }
 
-async function findRootFolders(workspaceId) {
-  const folder = await folderModel.find({workspaceId , parentId: null });
-  return folder;
+async function deleteFoldersByWorkspaceId(workspaceId){
+  const folders = await folderModel.deleteMany({workspaceId});
+  return folders;
 }
 
 module.exports = {
@@ -52,5 +59,6 @@ module.exports = {
   deleteFolderById,
   findFoldersByWorkspaceId,
   updateFolder,
-  findRootFolders
+  findRootFolders,
+  deleteFoldersByWorkspaceId
 };

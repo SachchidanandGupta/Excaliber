@@ -7,6 +7,7 @@ const {
   updateDocumentService,
   archiveDocumentService,
   searchDocumentsService,
+  deleteDocumentService
 } = require("../services/document.service");
 const AppError = require("../utils/appError");
 
@@ -127,6 +128,18 @@ const searchDocumentsController = asyncHandler(async function (req, res) {
   });
 });
 
+const deleteDocumentController = asyncHandler(async function (req,res){
+    const workspaceId = req.params.id;
+    const documentId = req.params.docId;
+    const userId = req.user.id;
+
+  const deletedDocument =   await deleteDocumentService({ documentId, workspaceId, userId });
+  return res.status(200).json({
+    success: true,
+     message: "Document permanently deleted"
+  });
+})
+
 module.exports = {
   createDocumentController,
    getDocumentsController,
@@ -134,4 +147,5 @@ module.exports = {
   updateDocumentController,
   archiveDocumentController,
   searchDocumentsController,
+  deleteDocumentController
 };

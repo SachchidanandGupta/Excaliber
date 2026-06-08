@@ -8,7 +8,8 @@ const {
   findDocumentById,
   updateDocument,
   searchDocuments,
-  archiveDocument
+  archiveDocument,
+  deleteDocumentById
 } = require("../repositories/document.repository");
 const { findFolderById } = require("../repositories/folder.repository");
 const AppError = require("../utils/appError");
@@ -163,6 +164,27 @@ const archiveDocumentService = async({ documentId, workspaceId, userId }) =>{
     }
     const updatedDocument = await archiveDocument(documentId);
     return updatedDocument;
+};
+
+const deleteDocumentService = async({ documentId, workspaceId, userId }) =>{
+    const collaborator = await findCollaboratorByWorkspaceAndUser({
+    workspaceId,
+    userId,
+  });
+  if (!collaborator) {
+    throw new AppError("Workspace not found or access denied", 403);
+  }
+   const roleHierarchy = { viewer: 0, editor: 1, owner: 2 };
+  if (roleHierarchy[collaborator.role] < roleHierarchy["owner"]) {
+    throw new AppError("Insufficient permissions", 403);
+  }
+  const document = await findDocumentById(documentId);
+  if(!document){
+      throw new AppError("document not founded",404);
+    }
+    const deletedDocument = await deleteDocumentById(documentId);
+    return deletedDocument;
+
 }
 
 module.exports = {
@@ -172,5 +194,6 @@ module.exports = {
   getDocumentByIdService,
   updateDocumentService,
   searchDocumentsService,
-  archiveDocumentService
+  archiveDocumentService,
+  deleteDocumentService
 };

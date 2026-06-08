@@ -31,6 +31,7 @@ const getWorkspaceByIdController = asyncHandler(async function (req, res) {
   const workspaceId = req.params.id;
   const userId = req.user.id;
   const {workspace,folder,role} = await getWorkspaceByIdService({ workspaceId, userId });
+
   return res.status(200).json({
     success: true,
     workspace,
