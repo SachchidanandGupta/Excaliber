@@ -12,8 +12,8 @@ async function createFolder({ workspaceId, name, parentId, createdBy, order }) {
 }
 
 async function findFoldersByWorkspaceId(workspaceId) {
-  const folder = await folderModel.find({workspaceId});
-  return folder;
+  const folders = await folderModel.find({workspaceId});
+  return folders;
 }
 
 async function findFolderById(id) {
